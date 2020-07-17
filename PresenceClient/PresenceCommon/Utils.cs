@@ -23,7 +23,7 @@ namespace PresenceCommon
                 assets.LargeImageText = !string.IsNullOrWhiteSpace(largeImageText) ? largeImageText : title.Name;
                 assets.LargeImageKey = !string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : title.Name.ToLower().Replace(" ", "");
                 assets.SmallImageText = "QuestPresence";
-                presence.Details = $"Playing {title.Name}";
+                presence.Details = $"{title.Name}";
             }
             else
             {
