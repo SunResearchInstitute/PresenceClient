@@ -93,8 +93,7 @@ namespace PresenceClient_CLI
             {
                 try
                 {
-                    byte[] bytes = new byte[600];
-                    int cnt = client.Receive(bytes);
+                    byte[] bytes = Utils.ReceiveExactly(client);
 
                     Title title = new Title(bytes);
                     if (title.Magic == 0xffaadd23)

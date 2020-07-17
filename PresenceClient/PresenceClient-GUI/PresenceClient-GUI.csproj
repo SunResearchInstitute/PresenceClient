@@ -7,7 +7,7 @@
     <ProjectGuid>{E1E88510-EE21-4E59-A5FD-052063CE7AC3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>PresenceClient_GUI</RootNamespace>
-    <AssemblyName>SwitchPresence-Rewritten-GUI</AssemblyName>
+    <AssemblyName>PresenceClient-GUI</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>

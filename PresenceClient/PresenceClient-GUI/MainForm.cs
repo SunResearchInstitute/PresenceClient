@@ -220,7 +220,7 @@ namespace PresenceClient_GUI
             {
                 try
                 {
-                    byte[] bytes = PresenceCommon.Utils.ReceiveExactly(client, 528);
+                    byte[] bytes = PresenceCommon.Utils.ReceiveExactly(client);
                     UpdateStatus("Connected to the server!", Color.Green);
                     trayIcon.Icon = Resources.Connected;
                     trayIcon.Text = "PresenceClient (Connected)";
