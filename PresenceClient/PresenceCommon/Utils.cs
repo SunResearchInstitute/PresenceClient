@@ -126,7 +126,7 @@ namespace PresenceCommon
         private partial class OverrideInfo
         {
             public string CustomName { set; get; }
-            public string Prefixure { set; get; }
+            public string CustomPrefix { set; get; }
             public string CustomKey { set; get; }
         }
     }

@@ -1,9 +1,4 @@
 {
-    "Netflix": {
-        "CustomPrefix": "Watching",
-        "CustomName": null,
-        "CustomKey": null
-    },
     "YouTube": {
         "CustomPrefix": "Watching",
         "CustomName": null,
