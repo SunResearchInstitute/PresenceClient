@@ -58,7 +58,7 @@ namespace PresenceCommon
                     OverrideInfo pkgInfo = SwitchOverrides[title.Name];
                     assets.LargeImageKey = pkgInfo.CustomKey ?? (!string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : $"0{title.ProgramId:x}");
 
-                    presence.Details = pkgInfo.Prefixure ?? "Playing";
+                    presence.Details = pkgInfo.CustomPrefix ?? "Playing";
 
                     if (pkgInfo.CustomName != null)
                     {
@@ -86,7 +86,7 @@ namespace PresenceCommon
                     OverrideInfo pkgInfo = QuestOverrides[title.Name];
                     assets.LargeImageKey = pkgInfo.CustomKey ?? (!string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : title.Name.ToLower().Replace(" ", ""));
 
-                    presence.Details = pkgInfo.Prefixure ?? "Playing";
+                    presence.Details = pkgInfo.CustomPrefix ?? "Playing";
 
                     if (pkgInfo.CustomName != null)
                     {

@@ -8,5 +8,20 @@
         "CustomPrefix": "On the",
         "CustomName": "Main Menu",
         "CustomKey": null
+    },
+    "Nextflix": {
+        "CustomPrefix": "Watching",
+        "CustomName": null,
+        "CustomKey": null
+    },
+    "Bigscreen": {
+        "CustomPrefix": "Watching",
+        "CustomName": null,
+        "CustomKey": null
+    },
+    "YouTube VR": {
+        "CustomPrefix": "Watching",
+        "CustomName": null,
+        "CustomKey": null
     }
 }
