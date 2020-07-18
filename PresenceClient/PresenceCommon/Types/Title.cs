@@ -9,14 +9,14 @@ namespace PresenceCommon.Types
         public ulong ProgramId { get; }
         public string Name { get; }
 
-        [StructLayout(LayoutKind.Sequential, Size = 528)]
+        [StructLayout(LayoutKind.Sequential, Size = 628)]
         private struct TitlePacket
         {
             [MarshalAs(UnmanagedType.U8)]
             public ulong magic;
             [MarshalAs(UnmanagedType.U8)]
             public ulong programId;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 512)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 612)]
             public byte[] name;
         }
 

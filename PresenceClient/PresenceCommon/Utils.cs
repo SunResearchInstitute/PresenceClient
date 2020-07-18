@@ -1,11 +1,28 @@
 ﻿using DiscordRPC;
+using Newtonsoft.Json;
 using PresenceCommon.Types;
+using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 
 namespace PresenceCommon
 {
     public static class Utils
     {
+        private static readonly Dictionary<string, OverrideInfo> QuestOverrides;
+        private static readonly Dictionary<string, OverrideInfo> SwitchOverrides;
+        static Utils()
+        {
+            WebClient client = new WebClient();
+            string json = client.DownloadString("https://raw.githubusercontent.com/Sun-Research-University/PresenceClient/master/Resource/QuestApplicationOverrides.json");
+            QuestOverrides = JsonConvert.DeserializeObject<Dictionary<string, OverrideInfo>>(json);
+
+            json = client.DownloadString("https://raw.githubusercontent.com/Sun-Research-University/PresenceClient/master/Resource/SwitchApplicationOverrides.json");
+            SwitchOverrides = JsonConvert.DeserializeObject<Dictionary<string, OverrideInfo>>(json);
+
+            client.Dispose();
+        }
+
         public static RichPresence CreateDiscordPresence(Title title, Timestamps time, string largeImageKey = "", string largeImageText = "", string smallImageKey = "", string state = "")
         {
             RichPresence presence = new RichPresence()
@@ -18,30 +35,71 @@ namespace PresenceCommon
                 SmallImageKey = smallImageKey,
             };
 
-            if (title.ProgramId == 0xffaadd23)
-            {
-                assets.LargeImageText = !string.IsNullOrWhiteSpace(largeImageText) ? largeImageText : title.Name;
-                assets.LargeImageKey = !string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : title.Name.ToLower().Replace(" ", "");
-                assets.SmallImageText = "QuestPresence";
-                presence.Details = $"{title.Name}";
-            }
-            else
+            if (title.ProgramId != 0xffaadd23)
             {
                 assets.SmallImageText = "SwitchPresence-Rewritten";
-                if (title.Name == "SNULL")
+                if (!SwitchOverrides.ContainsKey(title.Name))
                 {
-                    assets.LargeImageText = !string.IsNullOrWhiteSpace(largeImageText) ? largeImageText : "Home Menu";
-                    assets.LargeImageKey = !string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : $"0{0x0100000000001000:x}";
-                    presence.Details = "In the home menu";
+                    if (title.Name == "SNULL")
+                    {
+                        assets.LargeImageText = !string.IsNullOrWhiteSpace(largeImageText) ? largeImageText : "Home Menu";
+                        assets.LargeImageKey = !string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : $"0{0x0100000000001000:x}";
+                        presence.Details = "In the home menu";
+                    }
+                    else
+                    {
+                        assets.LargeImageText = !string.IsNullOrWhiteSpace(largeImageText) ? largeImageText : title.Name;
+                        assets.LargeImageKey = !string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : $"0{title.ProgramId:x}";
+                        presence.Details = $"Playing {title.Name}";
+                    }
                 }
                 else
                 {
-                    assets.LargeImageText = !string.IsNullOrWhiteSpace(largeImageText) ? largeImageText : title.Name;
-                    assets.LargeImageKey = !string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : $"0{title.ProgramId:x}";
-                    presence.Details = $"Playing {title.Name}";
+                    OverrideInfo pkgInfo = SwitchOverrides[title.Name];
+                    assets.LargeImageKey = pkgInfo.CustomKey ?? (!string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : $"0{title.ProgramId:x}");
+
+                    presence.Details = pkgInfo.Prefixure ?? "Playing";
+
+                    if (pkgInfo.CustomName != null)
+                    {
+                        presence.Details += $" {pkgInfo.CustomName}";
+                        assets.LargeImageText = pkgInfo.CustomName;
+                    }
+                    else
+                    {
+                        presence.Details += $" {title.Name}";
+                        assets.LargeImageText = title.Name;
+                    }
                 }
             }
+            else
+            {
+                assets.SmallImageText = "QuestPresence";
+                if (!QuestOverrides.ContainsKey(title.Name))
+                {
+                    assets.LargeImageText = !string.IsNullOrWhiteSpace(largeImageText) ? largeImageText : title.Name;
+                    assets.LargeImageKey = !string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : title.Name.ToLower().Replace(" ", "");
+                    presence.Details = $"Playing {title.Name}";
+                }
+                else
+                {
+                    OverrideInfo pkgInfo = QuestOverrides[title.Name];
+                    assets.LargeImageKey = pkgInfo.CustomKey ?? (!string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : title.Name.ToLower().Replace(" ", ""));
 
+                    presence.Details = pkgInfo.Prefixure ?? "Playing";
+
+                    if (pkgInfo.CustomName != null)
+                    {
+                        presence.Details += $" {pkgInfo.CustomName}";
+                        assets.LargeImageText = pkgInfo.CustomName;
+                    }
+                    else
+                    {
+                        presence.Details += $" {title.Name}";
+                        assets.LargeImageText = title.Name;
+                    }
+                }
+            }
 
             presence.Assets = assets;
             presence.Timestamps = time;
@@ -49,7 +107,7 @@ namespace PresenceCommon
             return presence;
         }
 
-        public static byte[] ReceiveExactly(Socket handler, int length)
+        public static byte[] ReceiveExactly(Socket handler, int length = 628)
         {
             var buffer = new byte[length];
             var receivedLength = 0;
@@ -59,12 +117,17 @@ namespace PresenceCommon
                 if (nextLength == 0)
                 {
                     throw new SocketException();
-                    //Throw an exception? Something else?
-                    //The socket's never going to receive more data
                 }
                 receivedLength += nextLength;
             }
             return buffer;
+        }
+
+        private partial class OverrideInfo
+        {
+            public string CustomName { set; get; }
+            public string Prefixure { set; get; }
+            public string CustomKey { set; get; }
         }
     }
 }
