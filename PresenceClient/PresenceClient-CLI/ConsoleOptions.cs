@@ -8,7 +8,7 @@ namespace PresenceClient_CLI
         [Option('m', "ignore-home-screen", Required = false, Default = false, HelpText = "Don't display the home screen")]
         public bool IgnoreHomeScreen { get; set; }
 
-        [Value(0, MetaName = "IP", Required = true, HelpText = "The IP address of your Console/Headset")]
+        [Value(0, MetaName = "IP", Required = true, HelpText = "The IP address of your device")]
         public string IP { get; set; }
         public IPAddress ParsedIP { get; set; }
 

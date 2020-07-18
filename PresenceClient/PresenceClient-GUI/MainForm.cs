@@ -59,7 +59,7 @@ namespace PresenceClient_GUI
                     {
                         HasSeenMacPrompt = true;
 
-                        string message = "We've detected that you're using an IP to connect to your Switch/Headset. Connecting via MAC address may make it easier to reconnect to your device in case the IP changes." +
+                        string message = "We've detected that you're using an IP to connect to your device. Connecting via MAC address may make it easier to reconnect to your device in case the IP changes." +
                                          "\n\nWould you like to swap to connecting via MAC address? \n(We'll only ask this once.)";
 
                         if (MessageBox.Show(message, "IP Detected", MessageBoxButtons.YesNo) == DialogResult.Yes)
