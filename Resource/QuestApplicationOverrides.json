@@ -1,12 +1,12 @@
 {
     "QuestPresence": {
         "CustomPrefix": "On the",
-        "CustomName": "Main Menu",
+        "CustomName": "Home Menu",
         "CustomKey": null
     },
     "Oculus App Runtime": {
         "CustomPrefix": "On the",
-        "CustomName": "Main Menu",
+        "CustomName": "Home Menu",
         "CustomKey": null
     },
     "Netflix": {

@@ -236,7 +236,7 @@ namespace PresenceClient_GUI
                         {
                             if (rpc != null)
                             {
-                                if (checkMainMenu.Checked == false && title.ProgramId == 0)
+                                if (checkMainMenu.Checked == false && title.Name == "Main Menu")
                                     rpc.ClearPresence();
                                 else
                                 {

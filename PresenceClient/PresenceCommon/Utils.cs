@@ -9,8 +9,8 @@ namespace PresenceCommon
 {
     public static class Utils
     {
-        private static readonly Dictionary<string, OverrideInfo> QuestOverrides;
-        private static readonly Dictionary<string, OverrideInfo> SwitchOverrides;
+        public static readonly Dictionary<string, OverrideInfo> QuestOverrides;
+        public static readonly Dictionary<string, OverrideInfo> SwitchOverrides;
         static Utils()
         {
             WebClient client = new WebClient();
@@ -32,75 +32,52 @@ namespace PresenceCommon
 
             Assets assets = new Assets
             {
-                SmallImageKey = smallImageKey,
+                SmallImageKey = smallImageKey
             };
 
+            assets.LargeImageText = title.Name;
             if (title.ProgramId != 0xffaadd23)
             {
                 assets.SmallImageText = "SwitchPresence-Rewritten";
+
                 if (!SwitchOverrides.ContainsKey(title.Name))
                 {
-                    if (title.Name == "SNULL")
-                    {
-                        assets.LargeImageText = !string.IsNullOrWhiteSpace(largeImageText) ? largeImageText : "Home Menu";
-                        assets.LargeImageKey = !string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : $"0{0x0100000000001000:x}";
-                        presence.Details = "In the home menu";
-                    }
-                    else
-                    {
-                        assets.LargeImageText = !string.IsNullOrWhiteSpace(largeImageText) ? largeImageText : title.Name;
-                        assets.LargeImageKey = !string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : $"0{title.ProgramId:x}";
-                        presence.Details = $"Playing {title.Name}";
-                    }
+                    assets.LargeImageKey = $"0{title.ProgramId:x}";
+                    presence.Details = $"Playing {title.Name}";
                 }
                 else
                 {
                     OverrideInfo pkgInfo = SwitchOverrides[title.Name];
-                    assets.LargeImageKey = pkgInfo.CustomKey ?? (!string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : $"0{title.ProgramId:x}");
+                    assets.LargeImageKey = pkgInfo.CustomKey ?? $"0{title.ProgramId:x}";
 
                     presence.Details = pkgInfo.CustomPrefix ?? "Playing";
-
-                    if (pkgInfo.CustomName != null)
-                    {
-                        presence.Details += $" {pkgInfo.CustomName}";
-                        assets.LargeImageText = pkgInfo.CustomName;
-                    }
-                    else
-                    {
-                        presence.Details += $" {title.Name}";
-                        assets.LargeImageText = title.Name;
-                    }
+                    presence.Details += $" {title.Name}";
                 }
             }
             else
             {
                 assets.SmallImageText = "QuestPresence";
+
                 if (!QuestOverrides.ContainsKey(title.Name))
                 {
-                    assets.LargeImageText = !string.IsNullOrWhiteSpace(largeImageText) ? largeImageText : title.Name;
-                    assets.LargeImageKey = !string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : title.Name.ToLower().Replace(" ", "");
+                    assets.LargeImageKey = title.Name.ToLower().Replace(" ", "");
                     presence.Details = $"Playing {title.Name}";
                 }
                 else
                 {
                     OverrideInfo pkgInfo = QuestOverrides[title.Name];
 
-                    assets.LargeImageKey = pkgInfo.CustomKey ?? (pkgInfo.CustomName != null ? pkgInfo.CustomName.ToLower().Replace(" ", "") : title.Name.ToLower().Replace(" ", ""));
+                    assets.LargeImageKey = pkgInfo.CustomKey ?? title.Name.ToLower().Replace(" ", "");
 
                     presence.Details = pkgInfo.CustomPrefix ?? "Playing";
-
-                    if (pkgInfo.CustomName != null)
-                    {
-                        presence.Details += $" {pkgInfo.CustomName}";
-                        assets.LargeImageText = pkgInfo.CustomName;
-                    }
-                    else
-                    {
-                        presence.Details += $" {title.Name}";
-                        assets.LargeImageText = title.Name;
-                    }
+                    presence.Details += $" {title.Name}";
                 }
             }
+            if (!string.IsNullOrEmpty(largeImageKey))
+                assets.LargeImageKey = largeImageKey;
+
+            if (!string.IsNullOrEmpty(largeImageText))
+                assets.LargeImageText = largeImageText;
 
             presence.Assets = assets;
             presence.Timestamps = time;
@@ -124,7 +101,7 @@ namespace PresenceCommon
             return buffer;
         }
 
-        private partial class OverrideInfo
+        public partial class OverrideInfo
         {
             public string CustomName { set; get; }
             public string CustomPrefix { set; get; }

@@ -15,7 +15,7 @@ namespace PresenceClient_CLI
     {
         static Timer timer;
         static Socket client;
-        static ulong LastProgramId = 0;
+        static string LastProgramName = string.Empty;
         static Timestamps time = null;
         static DiscordRpcClient rpc;
         static ConsoleOptions Arguments;
@@ -98,13 +98,13 @@ namespace PresenceClient_CLI
                     Title title = new Title(bytes);
                     if (title.Magic == 0xffaadd23)
                     {
-                        if (LastProgramId != title.ProgramId)
+                        if (LastProgramName != title.Name)
                         {
                             time = Timestamps.Now;
                         }
-                        if ((rpc != null && rpc.CurrentPresence == null) || LastProgramId != title.ProgramId)
+                        if ((rpc != null && rpc.CurrentPresence == null) || LastProgramName != title.Name)
                         {
-                            if (Arguments.IgnoreHomeScreen && title.ProgramId == 0)
+                            if (Arguments.IgnoreHomeScreen && title.Name == "Home Menu")
                             {
                                 rpc.ClearPresence();
                             }
@@ -112,7 +112,7 @@ namespace PresenceClient_CLI
                             {
                                 rpc.SetPresence(Utils.CreateDiscordPresence(title, time));
                             }
-                            LastProgramId = title.ProgramId;
+                            LastProgramName = title.Name;
                         }
                     }
                     else
@@ -133,7 +133,7 @@ namespace PresenceClient_CLI
 
         private static void OnConnectTimeout(object sender, ElapsedEventArgs e)
         {
-            LastProgramId = 0;
+            LastProgramName = string.Empty;
             time = null;
         }
 

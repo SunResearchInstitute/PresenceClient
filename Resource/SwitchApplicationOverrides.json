@@ -3,5 +3,10 @@
         "CustomPrefix": "Watching",
         "CustomName": null,
         "CustomKey": null
+    },
+    "Home Menu": {
+        "CustomPrefix": "In the",
+        "CustomName": null,
+        "CustomKey": null
     }
 }

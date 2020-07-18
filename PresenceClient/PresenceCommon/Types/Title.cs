@@ -24,8 +24,31 @@ namespace PresenceCommon.Types
         {
             TitlePacket title = DataHandler.ByteArrayToStructure<TitlePacket>(bytes);
             Magic = title.magic;
-            ProgramId = title.programId;
-            Name = Encoding.UTF8.GetString(title.name, 0, title.name.Length).Split('\0')[0];
+
+            if (title.programId == 0)
+            {
+                ProgramId = 0x0100000000001000;
+                Name = "Home Menu";
+            }
+            else
+            {
+                ProgramId = title.programId;
+                Name = Encoding.UTF8.GetString(title.name, 0, title.name.Length).Split('\0')[0];
+            }
+            if (title.programId == 0xffaadd23)
+            {
+                if (Utils.QuestOverrides.ContainsKey(Name) && Utils.QuestOverrides[Name].CustomName != null)
+                {
+                    Name = Utils.QuestOverrides[Name].CustomName;
+                }
+            }
+            else
+            {
+                if (Utils.SwitchOverrides.ContainsKey(Name) && Utils.SwitchOverrides[Name].CustomName != null)
+                {
+                    Name = Utils.SwitchOverrides[Name].CustomName;
+                }
+            }
         }
     }
 }
