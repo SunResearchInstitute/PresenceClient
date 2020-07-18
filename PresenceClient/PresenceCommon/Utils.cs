@@ -84,7 +84,8 @@ namespace PresenceCommon
                 else
                 {
                     OverrideInfo pkgInfo = QuestOverrides[title.Name];
-                    assets.LargeImageKey = pkgInfo.CustomKey ?? (!string.IsNullOrWhiteSpace(largeImageKey) ? largeImageKey : title.Name.ToLower().Replace(" ", ""));
+
+                    assets.LargeImageKey = pkgInfo.CustomKey ?? (pkgInfo.CustomName != null ? pkgInfo.CustomName.ToLower().Replace(" ", "") : title.Name.ToLower().Replace(" ", ""));
 
                     presence.Details = pkgInfo.CustomPrefix ?? "Playing";
 
