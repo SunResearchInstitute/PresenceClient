@@ -7,3 +7,6 @@ Simply Create an application at the [Discord Developer Portal](https://discordap
 If you're using QuestPresence, your icon name will be the application name in all lower capitalization with no spaces with the exception of some applications you can take a look [here](https://github.com/Sun-Research-University/PresenceClient/blob/master/Resource/QuestApplicationOverrides.json) for those exceptions, you will want to take of a note of the `CustomName` field and format using the above instructions for your icon name. Sometimes an app can have a `CustomKey` field that is filled out, you will want to use this instead of the formatted `CustomName`.
 
 If you're using SwitchPresence, your icon name will the application title ID, these icons can be dumped from the manager app included in the SwitchPresence release, the dumped icons will be formatted for you to upload directly to your discord developer application.
+
+# Support
+If you still need further asstiance you can find us on [Discord](https://link.sunthecourier.net/discord)!
