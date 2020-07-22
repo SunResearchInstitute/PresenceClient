@@ -23,5 +23,10 @@
         "CustomPrefix": "Watching",
         "CustomName": null,
         "CustomKey": null
+    },
+    "System UI": {
+        "CustomPrefix": "On the",
+        "CustomName": "Home Menu",
+        "CustomKey": null
     }
 }
