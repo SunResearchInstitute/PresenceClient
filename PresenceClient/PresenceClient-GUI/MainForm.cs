@@ -236,11 +236,12 @@ namespace PresenceClient_GUI
                         {
                             if (rpc != null)
                             {
-                                if (checkMainMenu.Checked == false && title.Name == "Main Menu")
+
+                                if (!checkMainMenu.Checked && title.Name == "Home Menu")
                                     rpc.ClearPresence();
                                 else
                                 {
-                                    rpc.SetPresence(PresenceCommon.Utils.CreateDiscordPresence(title, time, bigKeyBox.Text, bigTextBox.Text, smallKeyBox.Text, stateBox.Text));
+                                    rpc.SetPresence(PresenceCommon.Utils.CreateDiscordPresence(title, time, bigKeyBox.Text, bigTextBox.Text, smallKeyBox.Text, stateBox.Text, checkTime.Checked));
                                 }
                             }
                             ManualUpdate = false;

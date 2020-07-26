@@ -23,7 +23,7 @@ namespace PresenceCommon
             client.Dispose();
         }
 
-        public static RichPresence CreateDiscordPresence(Title title, Timestamps time, string largeImageKey = "", string largeImageText = "", string smallImageKey = "", string state = "")
+        public static RichPresence CreateDiscordPresence(Title title, Timestamps time, string largeImageKey = "", string largeImageText = "", string smallImageKey = "", string state = "", bool useProvidedTime = true)
         {
             RichPresence presence = new RichPresence()
             {
@@ -80,7 +80,8 @@ namespace PresenceCommon
                 assets.LargeImageText = largeImageText;
 
             presence.Assets = assets;
-            presence.Timestamps = time;
+            if (useProvidedTime)
+                presence.Timestamps = time;
 
             return presence;
         }

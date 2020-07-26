@@ -248,9 +248,9 @@
             this.checkMainMenu.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkMainMenu.Location = new System.Drawing.Point(40, 377);
             this.checkMainMenu.Name = "checkMainMenu";
-            this.checkMainMenu.Size = new System.Drawing.Size(170, 17);
+            this.checkMainMenu.Size = new System.Drawing.Size(175, 17);
             this.checkMainMenu.TabIndex = 18;
-            this.checkMainMenu.Text = "Display Main Menu as a status";
+            this.checkMainMenu.Text = "Display Home Menu as a status";
             this.checkMainMenu.UseVisualStyleBackColor = true;
             this.checkMainMenu.CheckedChanged += new System.EventHandler(this.CheckMainMenu_CheckedChanged);
             // 
