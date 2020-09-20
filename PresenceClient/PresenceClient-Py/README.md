@@ -16,6 +16,7 @@ python presence_client.py
 ### Arguments
 **ip**
 The IP address of your device
+
 **client_id**
 The Client ID of your Discord Rich Presence application
 
