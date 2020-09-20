@@ -8,11 +8,23 @@ import re
 import requests
 from pypresence import Presence
 
-TCP_PORT = 51966
-PACKETMAGIC = 4289387811
+TCP_PORT = 0xCAFE
+PACKETMAGIC = 0xFFAADD23
 
-questOverrides = json.loads(requests.get("https://raw.githubusercontent.com/Sun-Research-University/PresenceClient/master/Resource/QuestApplicationOverrides.json").text)
-switchOverrides = json.loads(requests.get("https://raw.githubusercontent.com/Sun-Research-University/PresenceClient/master/Resource/SwitchApplicationOverrides.json").text)
+parser = argparse.ArgumentParser()
+parser.add_argument('ip', help='The IP address of your device')
+parser.add_argument('client_id', help='The Client ID of your Discord Rich Presence application')
+parser.add_argument('--ignore-home-screen', dest='ignore_home_screen', action='store_true', help='Don\'t display the home screen. Defaults to false if missing this flag.')
+
+questOverrides = None
+switchOverrides = None
+
+try: 
+    questOverrides = json.loads(requests.get("https://raw.githubusercontent.com/Sun-Research-University/PresenceClient/master/Resource/QuestApplicationOverrides.json").text)
+    switchOverrides = json.loads(requests.get("https://raw.githubusercontent.com/Sun-Research-University/PresenceClient/master/Resource/SwitchApplicationOverrides.json").text)
+except:
+    print('Failed to retrieve Override files')
+    exit()
 
 #Defines a title packet
 class Title:
@@ -20,12 +32,12 @@ class Title:
     def __init__(self, raw_data):
         unpacker = struct.Struct('2L612s')
         enc_data = unpacker.unpack(raw_data)
-        self.magic = enc_data[0]
+        self.magic = int(enc_data[0])
         if int(enc_data[1]) == 0:
-            self.pid = enc_data[1]
+            self.pid = int(enc_data[1])
             self.name = 'Home Menu'
         else:
-            self.pid = enc_data[1]
+            self.pid = int(enc_data[1])
             self.name = enc_data[2].decode('utf-8', 'ignore').split('\x00')[0]
         if int(enc_data[0]) == PACKETMAGIC:
             if self.name in questOverrides:
@@ -36,16 +48,8 @@ class Title:
                 if switchOverrides[self.name]['CustomName'] != '':
                     self.name = switchOverrides[self.name]['CustomName']
 
-    def __repr__(self):
-        return str(self.name)+','+str(self.pid)+','+str(self.magic)
-
 
 def main():
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('ip', help='The IP address of your device')
-    parser.add_argument('client_id', help='The Client ID of your Discord Rich Presence application')
-    parser.add_argument('--ignore-home-screen', help='Don\'t display the home screen')
     consoleargs = parser.parse_args()
 
     switch_ip = consoleargs.ip
@@ -95,36 +99,39 @@ def main():
         if title.magic == PACKETMAGIC:
             if lastProgramName != title.name:
                 startTimer = int(time.time())
-            smallimagetext = ''
-            largeimagekey = ''
-            details = ''
-            largeimagetext = title.name
-            if int(title.pid) != PACKETMAGIC:
-                smallimagetext = 'SwitchPresence-Rewritten'
-                if title.name not in switchOverrides:
-                    largeimagekey = iconFromPid(title.pid)
-                    details = 'Playing ' + str(title.name)
-                else:
-                    orinfo = switchOverrides[title.name]
-                    largeimagekey = orinfo['CustomKey'] or iconFromPid(title.pid)
-                    details = orinfo['CustomPrefix'] or 'Playing'
-                    details += ' ' + title.name
+            if consoleargs.ignore_home_screen and title.name == 'Home Menu':
+                rpc.clear()
             else:
-                smallimagetext = 'QuestPresence'
-                if title.name not in questOverrides:
-                    largeimagekey = title.name.lower().replace(' ', '')
-                    details = 'Playing ' + title.name
+                smallimagetext = ''
+                largeimagekey = ''
+                details = ''
+                largeimagetext = title.name
+                if int(title.pid) != PACKETMAGIC:
+                    smallimagetext = 'SwitchPresence-Rewritten'
+                    if title.name not in switchOverrides:
+                        largeimagekey = iconFromPid(title.pid)
+                        details = 'Playing ' + str(title.name)
+                    else:
+                        orinfo = switchOverrides[title.name]
+                        largeimagekey = orinfo['CustomKey'] or iconFromPid(title.pid)
+                        details = orinfo['CustomPrefix'] or 'Playing'
+                        details += ' ' + title.name
                 else:
-                    orinfo = questOverrides[title.name]
-                    largeimagekey = orinfo['CustomKey'] or title.name.lower().replace(
-                        ' ', '')
-                    details = orinfo['CustomPrefix'] or 'Playing'
-                    details += ' ' + title.name
-            if not title.name:
-                title.name = ''
-            lastProgramName = title.name
-            rpc.update(details=details, start=startTimer, large_image=largeimagekey,
-                       large_text=largeimagetext, small_text=smallimagetext)
+                    smallimagetext = 'QuestPresence'
+                    if title.name not in questOverrides:
+                        largeimagekey = title.name.lower().replace(' ', '')
+                        details = 'Playing ' + title.name
+                    else:
+                        orinfo = questOverrides[title.name]
+                        largeimagekey = orinfo['CustomKey'] or title.name.lower().replace(
+                            ' ', '')
+                        details = orinfo['CustomPrefix'] or 'Playing'
+                        details += ' ' + title.name
+                if not title.name:
+                    title.name = ''
+                lastProgramName = title.name
+                rpc.update(details=details, start=startTimer, large_image=largeimagekey,
+                        large_text=largeimagetext, small_text=smallimagetext)
             time.sleep(1)
         else:
             time.sleep(1)
