@@ -28,7 +28,7 @@ namespace PresenceCommon
             RichPresence presence = new RichPresence()
             {
                 State = state
-            };
+            }; 
 
             Assets assets = new Assets
             {
