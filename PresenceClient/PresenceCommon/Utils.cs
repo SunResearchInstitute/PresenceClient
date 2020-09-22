@@ -88,8 +88,8 @@ namespace PresenceCommon
 
         public static byte[] ReceiveExactly(Socket handler, int length = 628)
         {
-            var buffer = new byte[length];
-            var receivedLength = 0;
+            byte[] buffer = new byte[length];
+            int receivedLength = 0;
             while (receivedLength < length)
             {
                 int nextLength = handler.Receive(buffer, receivedLength, length - receivedLength, SocketFlags.None);
