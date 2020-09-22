@@ -2,7 +2,7 @@
 [![pypresence](https://img.shields.io/badge/using-pypresence-00bb88.svg?style=for-the-badge&logo=discord&logoWidth=20)](https://github.com/qwertyquerty/pypresence)
 
 # Requirements
-Follow [setup](https://github.com/butforme/PresenceClient/blob/master/README.md) found here
+Follow [setup](https://github.com/Sun-Research-University/PresenceClient/blob/master/README.md) found here
 
 Download and install the [latest version of Python](https://www.python.org/downloads/) for your platform
 ### Use pip to install requirements
