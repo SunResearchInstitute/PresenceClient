@@ -108,13 +108,13 @@ def main():
                 largeimagetext = title.name
                 if int(title.pid) != PACKETMAGIC:
                     smallimagetext = 'SwitchPresence-Rewritten'
-                    if title.name not in switchOverrides:
+                    if iconFromPid(title.pid) not in switchOverrides:
                         largeimagekey = iconFromPid(title.pid)
                         details = 'Playing ' + str(title.name)
                     else:
-                        orinfo = switchOverrides[title.name]
-                        largeimagekey = orinfo['CustomKey'] or iconFromPid(title.pid)
-                        details = orinfo['CustomPrefix'] or 'Playing'
+                        pkgInfo = switchOverrides[iconFromPid(title.pid)]
+                        largeimagekey = pkgInfo['CustomKey'] or iconFromPid(title.pid)
+                        details = pkgInfo['CustomPrefix'] or 'Playing'
                         details += ' ' + title.name
                 else:
                     smallimagetext = 'QuestPresence'
@@ -122,10 +122,10 @@ def main():
                         largeimagekey = title.name.lower().replace(' ', '')
                         details = 'Playing ' + title.name
                     else:
-                        orinfo = questOverrides[title.name]
-                        largeimagekey = orinfo['CustomKey'] or title.name.lower().replace(
+                        pkgInfo = questOverrides[title.name]
+                        largeimagekey = pkgInfo['CustomKey'] or title.name.lower().replace(
                             ' ', '')
-                        details = orinfo['CustomPrefix'] or 'Playing'
+                        details = pkgInfo['CustomPrefix'] or 'Playing'
                         details += ' ' + title.name
                 if not title.name:
                     title.name = ''
