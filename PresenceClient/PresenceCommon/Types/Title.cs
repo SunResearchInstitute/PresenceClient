@@ -44,9 +44,9 @@ namespace PresenceCommon.Types
             }
             else
             {
-                if (Utils.SwitchOverrides.ContainsKey(Name) && Utils.SwitchOverrides[Name].CustomName != null)
+                if (Utils.SwitchOverrides.ContainsKey($"0{ProgramId:x}") && Utils.SwitchOverrides[$"0{ProgramId:x}"].CustomName != null)
                 {
-                    Name = Utils.SwitchOverrides[Name].CustomName;
+                    Name = Utils.SwitchOverrides[$"0{ProgramId:x}"].CustomName;
                 }
             }
         }

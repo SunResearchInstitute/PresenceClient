@@ -40,14 +40,14 @@ namespace PresenceCommon
             {
                 assets.SmallImageText = "SwitchPresence-Rewritten";
 
-                if (!SwitchOverrides.ContainsKey(title.Name))
+                if (!SwitchOverrides.ContainsKey($"0{title.ProgramId:x}"))
                 {
                     assets.LargeImageKey = $"0{title.ProgramId:x}";
                     presence.Details = $"Playing {title.Name}";
                 }
                 else
                 {
-                    OverrideInfo pkgInfo = SwitchOverrides[title.Name];
+                    OverrideInfo pkgInfo = SwitchOverrides[$"0{title.ProgramId:x}"];
                     assets.LargeImageKey = pkgInfo.CustomKey ?? $"0{title.ProgramId:x}";
 
                     presence.Details = pkgInfo.CustomPrefix ?? "Playing";
