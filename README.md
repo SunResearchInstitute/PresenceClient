@@ -11,4 +11,4 @@ If you're using SwitchPresence, your icon name will the application title ID, th
 Finally to connect you will need your device's IP for QuestPresence this will be on main application page and for SwitchPresence you will have to find it in the connection settings of the switch.
 
 # Support
-If you still need further asstiance you can find us on [Discord](https://link.sunthecourier.net/discord)!
+If you still need further asstiance you can find us on [Discord](https://link.headpat.services/discord)!
