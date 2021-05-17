@@ -1,10 +1,10 @@
 # PresenceClient
-Set your Discord rich presence using [SwitchPresence-Rewritten](https://github.com/Sun-Research-University/SwitchPresence-Rewritten) or [QuestPresence](https://github.com/Sun-Research-University/QuestPresence) running this app on your PC.
+Set your Discord rich presence using [SwitchPresence-Rewritten](https://github.com/HeadpatServices/SwitchPresence-Rewritten) or [QuestPresence](https://github.com/HeadpatServices/QuestPresence) running this app on your PC.
 
 # Setup
 Simply Create an application at the [Discord Developer Portal](https://discordapp.com/developers/applications/) call your application `Nintendo Switch`, `Oculus Quest` or whatever you would like and then enter your client ID and Device's IP into PresenceClient!<br>
 
-If you're using QuestPresence, your icon name will be the application name in all lower capitalization with no spaces with the exception of some applications you can take a look [here](https://github.com/Sun-Research-University/PresenceClient/blob/master/Resource/QuestApplicationOverrides.json) for those exceptions, you will want to take of a note of the `CustomName` field and format using the above instructions for your icon name. Sometimes an app can have a `CustomKey` field that is filled out, you will want to use this instead of the formatted `CustomName`.
+If you're using QuestPresence, your icon name will be the application name in all lower capitalization with no spaces with the exception of some applications you can take a look [here](https://github.com/HeadpatServices/PresenceClient/blob/master/Resource/QuestApplicationOverrides.json) for those exceptions, you will want to take of a note of the `CustomName` field and format using the above instructions for your icon name. Sometimes an app can have a `CustomKey` field that is filled out, you will want to use this instead of the formatted `CustomName`.
 
 If you're using SwitchPresence, your icon name will the application title ID, these icons can be dumped from the manager app included in the SwitchPresence release, the dumped icons will be formatted for you to upload directly to your discord developer application.
 
