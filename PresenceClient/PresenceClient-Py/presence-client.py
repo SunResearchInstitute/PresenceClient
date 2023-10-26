@@ -31,7 +31,6 @@ except:
 class Title:
     def __init__(self, raw_data):
         if len(raw_data) != 628:    #checks if the data is the correct length
-            time.sleep(60)        #if not, wait 60 seconds and wait a correct packet
             return
         unpacker = struct.Struct('2L612s')
         enc_data = unpacker.unpack(raw_data)
