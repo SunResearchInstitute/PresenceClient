@@ -11,6 +11,11 @@ from dotenv import load_dotenv
 
 load_dotenv() # load environment variables from .env file
 
+switch_ip = os.getenv('IP') #gets the IP from the environment variable                          #
+client_id = os.getenv('APPLICATION_ID') #gets the client ID from the environment variable       # Made them global variables so they can be used in the Title class
+                                                                                                #
+rpc = Presence(str(client_id))                                                                  # also rpc is here to clear and close it in the title class(if that deosn't work the script will restart lol)
+
 TCP_PORT = 0xCAFE
 PACKETMAGIC = 0xFFAADD23
 
@@ -31,7 +36,9 @@ except:
 class Title:
     def __init__(self, raw_data):
         if len(raw_data) != 628:    #checks if the data is the correct length
-            return
+            rpc.clear() #clears the RPC
+            rpc.close() #closes the RPC
+            os.system('python3 presence-client.py --ignore-home-screen') #restarts the script(best way to reinitialize the title packet(i have no idea how to do it otherwise))
         unpacker = struct.Struct('2L612s')
         enc_data = unpacker.unpack(raw_data)
         self.magic = int(enc_data[0])
@@ -52,13 +59,10 @@ class Title:
 
 def main():
     consoleargs = parser.parse_args()
-    switch_ip = os.getenv('IP') #gets the IP from the environment variable
-    client_id = os.getenv('APPLICATION_ID') #gets the client ID from the environment variable
     if not checkIP(switch_ip):
         print('Invalid IP')
         exit()
 
-    rpc = Presence(str(client_id))
     try:
         rpc.connect()
         rpc.clear()
@@ -73,8 +77,8 @@ def main():
             break
         except socket.error as e:
             print(f'Error connecting to {switch_ip}:{TCP_PORT}. Retrying in 1 minute.')
-            rpc.clear()
             time.sleep(60) #wait 1 minute before retrying
+            os.system('python3 presence-client.py --ignore-home-screen')
     lastProgramName = ''
     startTimer = 0
     while True:
@@ -150,7 +154,6 @@ def checkIP(ip):
 
 def iconFromPid(pid):
     return '0' + str(hex(int(pid))).split('0x')[1]
-
 
 if __name__ == '__main__':
     main()
