@@ -38,7 +38,7 @@ class Title:
         if len(raw_data) != 628:    #checks if the data is the correct length
             rpc.clear() #clears the RPC
             rpc.close() #closes the RPC
-            os.system('python3 presence-client.py --ignore-home-screen') #restarts the script(best way to reinitialize the title packet(i have no idea how to do it otherwise))
+            os.system('python3 presence-client.py --ignore-home-screen') #restarts the script(best way to reinitialize the title packet and kill the rpc (if the rpc command didn't do it)(i have no idea how to do it otherwise))
         unpacker = struct.Struct('2L612s')
         enc_data = unpacker.unpack(raw_data)
         self.magic = int(enc_data[0])
@@ -78,7 +78,6 @@ def main():
         except socket.error as e:
             print(f'Error connecting to {switch_ip}:{TCP_PORT}. Retrying in 1 minute.')
             time.sleep(60) #wait 1 minute before retrying
-            os.system('python3 presence-client.py --ignore-home-screen')
     lastProgramName = ''
     startTimer = 0
     while True:
