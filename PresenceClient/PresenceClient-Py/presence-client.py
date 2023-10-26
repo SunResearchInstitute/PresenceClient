@@ -74,6 +74,7 @@ def main():
             break
         except socket.error as e:
             print(f'Error connecting to {switch_ip}:{TCP_PORT}. Retrying in 1 minute.')
+            rpc.clear()
             time.sleep(60) #wait 1 minute before retrying
     lastProgramName = ''
     startTimer = 0
