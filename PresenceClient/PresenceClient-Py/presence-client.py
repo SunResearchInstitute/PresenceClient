@@ -9,7 +9,7 @@ import os
 from pypresence import Presence
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv() # load environment variables from .env file
 
 TCP_PORT = 0xCAFE
 PACKETMAGIC = 0xFFAADD23
@@ -31,7 +31,7 @@ except:
 class Title:
     def __init__(self, raw_data):
         if len(raw_data) != 628:    #checks if the data is the correct length
-            time.sleep(60)
+            time.sleep(60)        #if not, wait 60 seconds and wait a correct packet
             return
         unpacker = struct.Struct('2L612s')
         enc_data = unpacker.unpack(raw_data)
@@ -53,8 +53,8 @@ class Title:
 
 def main():
     consoleargs = parser.parse_args()
-    switch_ip = os.getenv('IP')
-    client_id = os.getenv('APPLICATION_ID')
+    switch_ip = os.getenv('IP') #gets the IP from the environment variable
+    client_id = os.getenv('APPLICATION_ID') #gets the client ID from the environment variable
     if not checkIP(switch_ip):
         print('Invalid IP')
         exit()
