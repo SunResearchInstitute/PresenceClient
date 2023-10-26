@@ -1,19 +1,20 @@
 import argparse
-import sys
 import json
 import socket
 import struct
 import time
 import re
 import requests
+import os
 from pypresence import Presence
+from dotenv import load_dotenv
+
+load_dotenv()
 
 TCP_PORT = 0xCAFE
 PACKETMAGIC = 0xFFAADD23
 
 parser = argparse.ArgumentParser()
-parser.add_argument('ip', help='The IP address of your device')
-parser.add_argument('client_id', help='The Client ID of your Discord Rich Presence application')
 parser.add_argument('--ignore-home-screen', dest='ignore_home_screen', action='store_true', help='Don\'t display the home screen. Defaults to false if missing this flag.')
 
 questOverrides = None
@@ -28,8 +29,10 @@ except:
 
 #Defines a title packet
 class Title:
-
     def __init__(self, raw_data):
+        if len(raw_data) != 628:    #checks if the data is the correct length
+            time.sleep(60)
+            return
         unpacker = struct.Struct('2L612s')
         enc_data = unpacker.unpack(raw_data)
         self.magic = int(enc_data[0])
@@ -48,13 +51,10 @@ class Title:
                 if switchOverrides[self.name]['CustomName'] != '':
                     self.name = switchOverrides[self.name]['CustomName']
 
-
 def main():
     consoleargs = parser.parse_args()
-
-    switch_ip = consoleargs.ip
-    client_id = consoleargs.client_id
-
+    switch_ip = os.getenv('IP')
+    client_id = os.getenv('APPLICATION_ID')
     if not checkIP(switch_ip):
         print('Invalid IP')
         exit()
@@ -65,36 +65,36 @@ def main():
         rpc.clear()
     except:
         print('Unable to start RPC!')
-
     switch_server_address = (switch_ip, TCP_PORT)
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    try:
-        sock.connect(switch_server_address)
-        print('Successfully connected to %s' % switch_ip + ':' + str(TCP_PORT))
-    except:
-        print('Error connection to %s refused' % switch_ip + ':' + str(TCP_PORT))
-        exit()
-
+    while True:
+        try:
+            sock.connect(switch_server_address)
+            print('Successfully connected to %s' % switch_ip + ':' + str(TCP_PORT))
+            break
+        except socket.error as e:
+            print(f'Error connecting to {switch_ip}:{TCP_PORT}. Retrying in 1 minute.')
+            time.sleep(60) #wait 1 minute before retrying
     lastProgramName = ''
     startTimer = 0
-
     while True:
         data = None
         try:
             data = sock.recv(628)
-        except:
+        except socket.error as e:
             print('Could not connect to Server! Retrying...')
-            startTimer = 0
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            time.sleep(1)
             try:
                 sock.connect(switch_server_address)
-                print('Successfully reconnected to %s' %
-                      repr(switch_server_address))
-            except:
-                print('Error reconnection to %s refused' %
-                      repr(switch_server_address))
-                exit()
+                print('Successfully reconnected to %s' % repr(switch_server_address))
+            except socket.error as e:
+                print(f'Error reconnecting to {repr(switch_server_address)}. Retrying...')
+                time.sleep(1)
+                continue
+        title = Title(data)
+        if not hasattr(title, 'magic'): 
+            os.system('python3 presence-client.py --ignore-home-screen')
+            continue
         title = Title(data)
         if title.magic == PACKETMAGIC:
             if lastProgramName != title.name:
