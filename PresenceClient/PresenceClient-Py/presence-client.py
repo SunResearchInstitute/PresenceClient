@@ -23,6 +23,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--ignore-home-screen', dest='ignore_home_screen', action='store_true', help='Don\'t display the home screen. Defaults to false if missing this flag.')
 parser.add_argument('--ignore-tinfoil', dest='ignore_tinfoil', action='store_true', help='Don\'t display the Tinfoil app. Defaults to false if missing this flag.')
 
+consoleargs = parser.parse_args()
+
 questOverrides = None
 switchOverrides = None
 
@@ -33,19 +35,22 @@ except:
     print('Failed to retrieve Override files')
     exit()
 
+def restart():
+    if consoleargs.ignore_tinfoil and consoleargs.ignore_home_screen:
+        os.system('python3 presence-client.py --ignore-home-screen --ignore-tinfoil')
+    if consoleargs.ignore_tinfoil:
+        os.system('python3 presence-client.py --ignore-tinfoil')
+    if consoleargs.ignore_home_screen:
+        os.system('python3 presence-client.py --ignore-home-screen')
+    os.system('python3 presence-client.py') 
+
 #Defines a title packet
 class Title:
     def __init__(self, raw_data):
         if len(raw_data) != 628:    #checks if the data is the correct length
             rpc.clear() #clears the RPC
             rpc.close() #closes the RPC
-            if parser.ignore_tinfoil and parser.ignore_home_screen:
-                os.system('python3 presence-client.py --ignore-home-screen --ignore-tinfoil')
-            if parser.ignore_tinfoil:
-                os.system('python3 presence-client.py --ignore-tinfoil')
-            if parser.ignore_home_screen:
-                os.system('python3 presence-client.py --ignore-home-screen')
-            os.system('python3 presence-client.py') 
+            restart() #restarts the script with the flags
         unpacker = struct.Struct('2L612s')
         enc_data = unpacker.unpack(raw_data)
         self.magic = int(enc_data[0])
@@ -68,7 +73,6 @@ class Title:
                     self.name = switchOverrides[self.name]['CustomName']
 
 def main():
-    consoleargs = parser.parse_args()
     if not checkIP(switch_ip):
         print('Invalid IP')
         exit()
@@ -106,13 +110,7 @@ def main():
                 continue
         title = Title(data)
         if not hasattr(title, 'magic'): 
-            if parser.ignore_tinfoil and parser.ignore_home_screen:
-                os.system('python3 presence-client.py --ignore-home-screen --ignore-tinfoil')
-            if parser.ignore_tinfoil:
-                os.system('python3 presence-client.py --ignore-tinfoil')
-            if parser.ignore_home_screen:
-                os.system('python3 presence-client.py --ignore-home-screen')
-            os.system('python3 presence-client.py')
+            restart()
             continue
         title = Title(data)
         if title.magic == PACKETMAGIC:
