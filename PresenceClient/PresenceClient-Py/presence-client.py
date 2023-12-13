@@ -39,7 +39,13 @@ class Title:
         if len(raw_data) != 628:    #checks if the data is the correct length
             rpc.clear() #clears the RPC
             rpc.close() #closes the RPC
-            os.system('python3 presence-client.py --ignore-home-screen --ignore-tinfoil') #restarts the script(best way to reinitialize the title packet and kill the rpc (if the rpc command didn't do it)(i have no idea how to do it otherwise))
+            if parser.ignore_tinfoil and parser.ignore_home_screen:
+                os.system('python3 presence-client.py --ignore-home-screen --ignore-tinfoil')
+            if parser.ignore_tinfoil:
+                os.system('python3 presence-client.py --ignore-tinfoil')
+            if parser.ignore_home_screen:
+                os.system('python3 presence-client.py --ignore-home-screen')
+            os.system('python3 presence-client.py') 
         unpacker = struct.Struct('2L612s')
         enc_data = unpacker.unpack(raw_data)
         self.magic = int(enc_data[0])
@@ -100,7 +106,13 @@ def main():
                 continue
         title = Title(data)
         if not hasattr(title, 'magic'): 
-            os.system('python3 presence-client.py --ignore-home-screen --ignore-tinfoil')
+            if parser.ignore_tinfoil and parser.ignore_home_screen:
+                os.system('python3 presence-client.py --ignore-home-screen --ignore-tinfoil')
+            if parser.ignore_tinfoil:
+                os.system('python3 presence-client.py --ignore-tinfoil')
+            if parser.ignore_home_screen:
+                os.system('python3 presence-client.py --ignore-home-screen')
+            os.system('python3 presence-client.py')
             continue
         title = Title(data)
         if title.magic == PACKETMAGIC:
