@@ -21,6 +21,7 @@ PACKETMAGIC = 0xFFAADD23
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--ignore-home-screen', dest='ignore_home_screen', action='store_true', help='Don\'t display the home screen. Defaults to false if missing this flag.')
+parser.add_argument('--ignore-tinfoil', dest='ignore_tinfoil', action='store_true', help='Don\'t display the Tinfoil app. Defaults to false if missing this flag.')
 
 questOverrides = None
 switchOverrides = None
@@ -38,13 +39,16 @@ class Title:
         if len(raw_data) != 628:    #checks if the data is the correct length
             rpc.clear() #clears the RPC
             rpc.close() #closes the RPC
-            os.system('python3 presence-client.py --ignore-home-screen') #restarts the script(best way to reinitialize the title packet and kill the rpc (if the rpc command didn't do it)(i have no idea how to do it otherwise))
+            os.system('python3 presence-client.py --ignore-home-screen --ignore-tinfoil') #restarts the script(best way to reinitialize the title packet and kill the rpc (if the rpc command didn't do it)(i have no idea how to do it otherwise))
         unpacker = struct.Struct('2L612s')
         enc_data = unpacker.unpack(raw_data)
         self.magic = int(enc_data[0])
         if int(enc_data[1]) == 0:
             self.pid = int(enc_data[1])
             self.name = 'Home Menu'
+        if int(enc_data[1]) == 0:
+            self.pid = int(enc_data[1])
+            self.name = 'Tinfoil'
         else:
             self.pid = int(enc_data[1])
             self.name = enc_data[2].decode('utf-8', 'ignore').split('\x00')[0]
@@ -96,13 +100,15 @@ def main():
                 continue
         title = Title(data)
         if not hasattr(title, 'magic'): 
-            os.system('python3 presence-client.py --ignore-home-screen')
+            os.system('python3 presence-client.py --ignore-home-screen --ignore-tinfoil')
             continue
         title = Title(data)
         if title.magic == PACKETMAGIC:
             if lastProgramName != title.name:
                 startTimer = int(time.time())
             if consoleargs.ignore_home_screen and title.name == 'Home Menu':
+                rpc.clear()
+            if consoleargs.ignore_tinfoil and title.name == 'Tinfoil':
                 rpc.clear()
             else:
                 smallimagetext = ''
