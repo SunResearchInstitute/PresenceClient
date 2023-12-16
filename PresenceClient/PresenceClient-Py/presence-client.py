@@ -38,6 +38,10 @@ except:
     exit()
 
 def restart():
+    rpc.clear()
+    rpc.close()
+    sock.close()
+    
     command = 'python3 presence-client.py'
 
     if consoleargs.ignore_tinfoil:
@@ -50,10 +54,7 @@ def restart():
 class Title:
     def __init__(self, raw_data):
         if len(raw_data) != 628:
-            rpc.clear()
-            sock.close()
-            sock.connect(switch_server_address)
-            sock.recv(628)
+            restart()
 
         unpacker = struct.Struct('2L612s')
         enc_data = unpacker.unpack(raw_data)
