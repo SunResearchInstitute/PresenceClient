@@ -8,6 +8,7 @@ import requests
 import os
 from pypresence import Presence
 from dotenv import load_dotenv
+import subprocess
 
 load_dotenv()
 
@@ -41,15 +42,17 @@ def restart():
     rpc.clear()
     rpc.close()
     sock.close()
-    
-    command = 'python3 presence-client.py'
+
+    command = ['python3', 'presence-client.py']
 
     if consoleargs.ignore_tinfoil:
-        command += ' --ignore-tinfoil'
+        command.append('--ignore-tinfoil')
     if consoleargs.ignore_home_screen:
-        command += ' --ignore-home-screen'
+        command.append('--ignore-home-screen')
 
-    os.system(command)
+    subprocess.Popen(command)
+    exit()
+
 
 class Title:
     def __init__(self, raw_data):
@@ -138,7 +141,6 @@ def main():
                         large_text=largeimagetext, small_text=smallimagetext)
             time.sleep(1)
         else:
-            time.sleep(1)
             rpc.clear()
             rpc.close()
             sock.close()
