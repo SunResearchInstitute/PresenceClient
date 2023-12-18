@@ -9,6 +9,7 @@ import os
 from pypresence import Presence
 from dotenv import load_dotenv
 import subprocess
+import time
 
 load_dotenv()
 
@@ -23,6 +24,8 @@ PACKETMAGIC = 0xFFAADD23
 parser = argparse.ArgumentParser()
 parser.add_argument('--ignore-home-screen', dest='ignore_home_screen', action='store_true', help='Hide the home screen. Defaults to false if missing this flag.')
 parser.add_argument('--ignore-tinfoil', dest='ignore_tinfoil', action='store_true', help='Hide the Tinfoil app. Defaults to false if missing this flag.')
+parser.add_argument('--low-latancy', dest='latancy',action='store_true', help='Enable low-latancy mode. Defaults to false if missing this flag.')
+parser.set_defaults(ignore_home_screen=False, ignore_tinfoil=False, latancy=False)
 consoleargs = parser.parse_args()
 
 questOverrides = None
@@ -30,6 +33,11 @@ switchOverrides = None
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 switch_server_address = (switch_ip, TCP_PORT)
+
+if consoleargs.latancy == True:
+    latancy = 15
+else:
+    latancy = 60
 
 try: 
     questOverrides = json.loads(requests.get("https://raw.githubusercontent.com/Sun-Research-University/PresenceClient/master/Resource/QuestApplicationOverrides.json").text)
@@ -45,6 +53,8 @@ def restart():
 
     command = ['python3', 'presence-client.py']
 
+    if consoleargs.latancy:
+        command.append('--low-latancy')
     if consoleargs.ignore_tinfoil:
         command.append('--ignore-tinfoil')
     if consoleargs.ignore_home_screen:
@@ -52,7 +62,6 @@ def restart():
 
     subprocess.Popen(command)
     exit()
-
 
 class Title:
     def __init__(self, raw_data):
@@ -90,23 +99,29 @@ def main():
             print(f'Successfully connected to {switch_ip}:{TCP_PORT}')
             break
         except socket.error:
-            print(f'Error connecting to {switch_ip}:{TCP_PORT}. Retrying in 1 minute.')
-            time.sleep(60)
+            print(f'Error connecting to {switch_ip}:{TCP_PORT}. Retrying in {latancy} seconds.')
+            time.sleep(latancy)
     lastProgramName = ''
     startTimer = 0
     while True:
         data = None
         try:
+            sock.settimeout(15)
             data = sock.recv(628)
+            sock.settimeout(None)
+        except socket.timeout:
+            sock.settimeout(None)
+            sock.close()
+            restart()
         except socket.error:
             print('Could not connect to Server! Retrying...')
-            time.sleep(60)
+            time.sleep(latancy)
             try:
                 sock.connect(switch_server_address)
                 print('Successfully reconnected to %s' % repr(switch_server_address))
             except socket.error:
                 print(f'Error reconnecting to {repr(switch_server_address)}. Retrying...')
-                time.sleep(60)
+                time.sleep(latancy)
                 continue
         def get_details(title, overrides):
             if title.name in overrides:
